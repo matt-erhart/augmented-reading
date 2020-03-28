@@ -11,7 +11,7 @@ yarn
 Start hot-reload compiling:
 
 ```bash
-yarn start
+yarn dev
 ```
 
 Install the unpacked extension:
