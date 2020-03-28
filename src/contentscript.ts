@@ -13,18 +13,44 @@ const uniqueMathSymbols = unique(
   allMathElements
     .filter(x => x.textContent.length === 1)
     .map(x => x.textContent)
-).reverse()
+).reverse();
 const nSymbols = uniqueMathSymbols.length;
 const symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
   state = { ...state, [val]: d3Color.interpolateRainbow(Math.random()) };
   return state;
 }, {});
+
+let activeColor = ''
+
 allMathElements
   .filter(x => x.textContent.length === 1)
   .forEach(el => {
     el.style.color = symbolColors[el.textContent];
+    el.style.cursor = 'pointer'
+    el.addEventListener('click', e=> {
+      activeColor = symbolColors[el.textContent]
+    })
   });
-console.log("uniqueMathSymbols: ", symbolColors);
+
+function surroundSelection() {
+  var span = document.createElement("span");
+  span.style.fontWeight = "bold";
+  span.style.color = activeColor;
+
+  if (window.getSelection) {
+    var sel = window.getSelection();
+    if (sel.rangeCount) {
+      var range = sel.getRangeAt(0).cloneRange();
+      range.surroundContents(span);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+}
+
+document.addEventListener('mouseup' e => {
+  surroundSelection()
+})
 
 // const titles = Array.from(document.querySelectorAll("h3 a")).forEach(el => {
 //   if (!el.parentElement) return;
