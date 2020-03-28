@@ -1,0 +1,48 @@
+{
+  "name": "extension-name",
+  "scripts": {
+    "dev": "yarn clean && yarn copy-static && yarn watch:all",
+    "build": "yarn clean && yarn build:all && yarn copy-static",
+    "build:all": "yarn build:background & yarn build:contentscript & yarn build:popup",
+    "build:contentscript": "parcel build src/contentscript.ts -o contentscript.js",
+    "build:background": "parcel build src/background.ts -o background.js",
+    "build:popup": "parcel build src/popup.tsx -o popup.js --public-url='/'",
+    "watch:all": "run-p -r watch:background watch:contentscript watch:popup",
+    "watch:contentscript": "parcel watch --hmr-hostname localhost src/contentscript.ts -o contentscript.js",
+    "watch:background": "parcel watch --hmr-hostname localhost src/background.ts -o background.js",
+    "watch:popup": "parcel watch --hmr-hostname localhost src/popup.tsx -o popup.js --public-url='/'",
+    "copy-static": "cp -r static/ dist/",
+    "clean": "rm -rf dist",
+    "css-types": "tcm src",
+    "postinstall": "yarn css-types",
+    "precommit": "lint-staged"
+  },
+  "watch": {
+    "copy-static": {
+      "patterns": [
+        "static"
+      ],
+      "extensions": "*",
+      "quiet": false
+    }
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.101",
+    "@types/react": "^16.9.25",
+    "@types/react-dom": "^16.9.5",
+    "npm-run-all": "^4.1.5",
+    "npm-watch": "^0.3.0",
+    "parcel-bundler": "^1.12.3",
+    "tslint": "^5.19.0",
+    "typescript": "^3.8.3",
+    "web-ext-types": "^3.2.1"
+  },
+  "dependencies": {
+    "d3-scale-chromatic": "^1.5.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "styled-components": "^5.0.1"
+  },
+  "version": "0.0.0",
+  "private": true
+}
