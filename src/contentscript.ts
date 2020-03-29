@@ -14,6 +14,7 @@ const uniqueMathSymbols = unique(
     .filter(x => x.textContent.length === 1)
     .map(x => x.textContent)
 ).reverse();
+
 const nSymbols = uniqueMathSymbols.length;
 const symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
   state = { ...state, [val]: d3Color.interpolateRainbow(Math.random()) };
@@ -21,21 +22,50 @@ const symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
 }, {});
 
 let activeColor = ''
+let activeSymbol = ''
+
+const setActive = el => e => {
+  activeColor = symbolColors[el.textContent]
+  activeSymbol = el.textContent
+  // document.body.style.cursor = 'alias'
+}
+
+
+
+const onHoverSymbol = el => e => {
+  allMathElements
+  .filter(x => x.textContent.length === 1 && el.textContent !== x.textContent)
+  .forEach(el => {
+    el.style.color = 'lightgrey'
+  })
+}
+
+const onExitSymbol = el => e => {
+  allMathElements
+  .filter(x => x.textContent.length === 1)
+  .forEach(el => {
+    el.style.color = symbolColors[el.textContent];
+  })
+}
 
 allMathElements
   .filter(x => x.textContent.length === 1)
   .forEach(el => {
     el.style.color = symbolColors[el.textContent];
     el.style.cursor = 'pointer'
-    el.addEventListener('click', e=> {
-      activeColor = symbolColors[el.textContent]
-    })
+    el.addEventListener('click', setActive(el) )
+
+    el.addEventListener('mouseenter', onHoverSymbol(el))
+    el.addEventListener('mouseleave', onExitSymbol(el))
   });
 
+let count = 0;
 function surroundSelection() {
   var span = document.createElement("span");
   span.style.fontWeight = "bold";
   span.style.color = activeColor;
+  span.id = count.toString()
+  count++
 
   if (window.getSelection) {
     var sel = window.getSelection();
@@ -44,8 +74,32 @@ function surroundSelection() {
       range.surroundContents(span);
       sel.removeAllRanges();
       sel.addRange(range);
+
+      if (sel?.toString().length > 0){
+        allMathElements
+        .filter(x => x.textContent.length === 1 && x.textContent === activeSymbol)
+        .forEach(el => {
+          el.title = sel?.toString()
+          el.removeEventListener('click', setActive(el))
+          let link = document.createElement('a')
+          link.href = '#' + span.id
+          surroundEl(el, link)
+          // document.body.style.cursor = 'auto'
+
+          // el.addEventListener('click',e => {
+          //   document.getElementById(span.id).scrollIntoView();
+          // })
+        
+        })
+      }
+      
     }
   }
+}
+
+function surroundEl(el, wrapper) {
+  el.parentNode.insertBefore(wrapper, el);
+  wrapper.appendChild(el);
 }
 
 document.addEventListener('mouseup' e => {

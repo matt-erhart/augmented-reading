@@ -17,8 +17,10 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "https://www.arxiv-vanity.com/*",
+        "http://www.arxiv-vanity.com/*"
+        // "http://*/*",
+        // "https://*/*"
       ],
       "js": ["contentscript.js"]
     }
