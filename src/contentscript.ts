@@ -3,12 +3,16 @@ import { unique } from "./utils";
 import * as d3Color from "d3-scale-chromatic";
 MountReact();
 
-Array.from(document.getElementsByClassName("mjx-char")).forEach(el => {
-  el.style.color = d3Color.interpolateRainbow(0.9);
-  el.style.fontWeight = "bold";
-});
 
+const keepBlack = [...'0123456789,.()[];']
 const allMathElements = Array.from(document.getElementsByClassName("mjx-char"));
+
+// apply color
+// allMathElements.forEach(el => {
+//   el.style.color = d3Color.interpolateRainbow(0.9);
+//   el.style.fontWeight = "bold";
+// });
+
 const uniqueMathSymbols = unique(
   allMathElements
     .filter(x => x.textContent.length === 1)
@@ -17,7 +21,9 @@ const uniqueMathSymbols = unique(
 
 const nSymbols = uniqueMathSymbols.length;
 const symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
-  state = { ...state, [val]: d3Color.interpolateRainbow(Math.random()) };
+  const randColor = d3Color.interpolateRainbow(Math.random())
+  const shouldSkip = keepBlack.includes(val)
+  state = { ...state, [val]: shouldSkip?'black':randColor  };
   return state;
 }, {});
 
@@ -26,11 +32,9 @@ let activeSymbol = ''
 
 const setActive = el => e => {
   activeColor = symbolColors[el.textContent]
-  activeSymbol = el.textContent
-  // document.body.style.cursor = 'alias'
+  activeSymbol = activeSymbol === '' ? el.textContent: ''
+  navigator.clipboard.writeText(activeSymbol).then()
 }
-
-
 
 const onHoverSymbol = el => e => {
   allMathElements
@@ -48,11 +52,14 @@ const onExitSymbol = el => e => {
   })
 }
 
+// augment elements
 allMathElements
   .filter(x => x.textContent.length === 1)
   .forEach(el => {
     el.style.color = symbolColors[el.textContent];
     el.style.cursor = 'pointer'
+    el.style.fontWeight = 'bold'
+    el.style.transition = 'color 300ms'
     el.addEventListener('click', setActive(el) )
 
     el.addEventListener('mouseenter', onHoverSymbol(el))
@@ -83,13 +90,7 @@ function surroundSelection() {
           el.removeEventListener('click', setActive(el))
           let link = document.createElement('a')
           link.href = '#' + span.id
-          surroundEl(el, link)
-          // document.body.style.cursor = 'auto'
-
-          // el.addEventListener('click',e => {
-          //   document.getElementById(span.id).scrollIntoView();
-          // })
-        
+          surroundEl(el, link)        
         })
       }
       
