@@ -5,22 +5,15 @@ MountReact();
 
 
 const keepBlack = [...'0123456789,.()[];']
-const allMathElements = Array.from(document.getElementsByClassName("mjx-char"));
-
-// apply color
-// allMathElements.forEach(el => {
-//   el.style.color = d3Color.interpolateRainbow(0.9);
-//   el.style.fontWeight = "bold";
-// });
+const allMathElements = Array.from(document.getElementsByClassName("mjx-char")).filter(x => x.textContent.length === 1)
 
 const uniqueMathSymbols = unique(
   allMathElements
-    .filter(x => x.textContent.length === 1)
     .map(x => x.textContent)
 ).reverse();
 
 const nSymbols = uniqueMathSymbols.length;
-const symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
+let symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
   const randColor = d3Color.interpolateRainbow(Math.random())
   const shouldSkip = keepBlack.includes(val)
   state = { ...state, [val]: shouldSkip?'black':randColor  };
@@ -30,26 +23,39 @@ const symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
 let activeColor = ''
 let activeSymbol = ''
 
-const setActive = el => e => {
-  activeColor = symbolColors[el.textContent]
-  activeSymbol = activeSymbol === '' ? el.textContent: ''
-  navigator.clipboard.writeText(activeSymbol).then()
-}
-
-const onHoverSymbol = el => e => {
+function focusActive(el){
   allMathElements
-  .filter(x => x.textContent.length === 1 && el.textContent !== x.textContent)
+  .filter(x => el.textContent !== x.textContent)
   .forEach(el => {
     el.style.color = 'lightgrey'
   })
 }
 
-const onExitSymbol = el => e => {
+function renderAllColors(){
   allMathElements
-  .filter(x => x.textContent.length === 1)
   .forEach(el => {
     el.style.color = symbolColors[el.textContent];
   })
+}
+
+const setActive = el => e => {
+  activeColor = symbolColors[el.textContent]
+  activeSymbol = activeSymbol === '' ? el.textContent: ''
+  navigator.clipboard.writeText(activeSymbol).then()
+
+  if (activeColor === '') {
+    renderAllColors()
+  } else {
+    focusActive(el)
+  } 
+}
+
+const onHoverSymbol = el => e => {
+  if (!activeSymbol) focusActive(el)
+}
+
+const onExitSymbol = el => e => {
+  if (!activeSymbol) renderAllColors()
 }
 
 // augment elements
@@ -104,7 +110,7 @@ function surroundEl(el, wrapper) {
 }
 
 document.addEventListener('mouseup' e => {
-  surroundSelection()
+  if (activeSymbol !== '') surroundSelection()
 })
 
 // const titles = Array.from(document.querySelectorAll("h3 a")).forEach(el => {
