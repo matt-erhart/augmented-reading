@@ -20,6 +20,21 @@ let symbolColors = uniqueMathSymbols.reduce((state, val, ix) => {
   return state;
 }, {});
 
+let counts = allMathElements.reduce((state, el, ix) => {
+  const textContent = el?.textContent || ''
+  if (state.hasOwnProperty(textContent)) {
+    state[textContent]++
+  } else {
+    state[textContent] = 1
+  }
+  el.title = state[textContent]
+  return state
+}, {})
+
+allMathElements.forEach(el => {
+  el.title = el.title + '/' + counts[el.textContent]
+})
+
 let activeColor = ''
 let activeSymbol = ''
 
@@ -92,7 +107,7 @@ function surroundSelection() {
         allMathElements
         .filter(x => x.textContent.length === 1 && x.textContent === activeSymbol)
         .forEach(el => {
-          el.title = sel?.toString()
+          el.title = sel?.toString() + ' ' + el.title
           el.removeEventListener('click', setActive(el))
           let link = document.createElement('a')
           link.href = '#' + span.id
