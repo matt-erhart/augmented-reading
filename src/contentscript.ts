@@ -30,7 +30,7 @@ let counts = allMathElements.reduce((state, el, ix) => {
   el.title = state[textContent]
   return state
 }, {})
-
+console.log(counts);
 allMathElements.forEach(el => {
   el.title = el.title + '/' + counts[el.textContent]
 })

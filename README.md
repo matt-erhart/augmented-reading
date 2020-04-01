@@ -8,11 +8,12 @@
   - Greys out other symbols
   - Can now highlight text and it will be added to the title of all instances of the symbol
   - click any symbol again to reset colors
-  - adds symbol to clip board for easier ctrl-f 
+  - adds symbol to clipboard for easier ctrl-f 
 - Clicking a symbol with a definition scrolls to that definition 
   - back button scrolls back 
 - Hover also focuses the symbols
 - refresh to get a new random set of colors
+- symbol order number / total per symbol in title
 
 # And then
 - Try out different chunking and coloring defaults
