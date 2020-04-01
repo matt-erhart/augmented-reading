@@ -1,8 +1,8 @@
 import { MountReact } from "./index";
 import { unique } from "./utils";
 import * as d3Color from "d3-scale-chromatic";
-MountReact();
-
+import {ActiveSymbol} from './messages'
+// MountReact();
 
 const keepBlack = [...'0123456789,.()[];']
 const allMathElements = Array.from(document.getElementsByClassName("mjx-char")).filter(x => x.textContent.length === 1)
@@ -30,7 +30,7 @@ let counts = allMathElements.reduce((state, el, ix) => {
   el.title = state[textContent]
   return state
 }, {})
-console.log(counts);
+
 allMathElements.forEach(el => {
   el.title = el.title + '/' + counts[el.textContent]
 })
@@ -62,6 +62,7 @@ const setActive = el => e => {
     renderAllColors()
   } else {
     focusActive(el)
+    chrome.runtime.sendMessage({activeSymbol} as ActiveSymbol);
   } 
 }
 

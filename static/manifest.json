@@ -9,10 +9,7 @@
   },
   "permissions": ["contextMenus"],
   "background": {
-    "scripts": [
-      "hot-reload.js",
-      "background.js"
-    ]
+    "scripts": ["hot-reload.js", "background.js"]
   },
   "content_scripts": [
     {
