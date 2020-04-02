@@ -1,19 +1,5 @@
 import extension from "./extensionAPIs";
-import { ActiveSymbol } from "./messages";
-chrome.runtime.onMessage.addListener(function(
-  request: ActiveSymbol,
-  sender,
-  sendResponse
-) {
-  console.log(
-    sender.tab
-      ? "from a content script:" + sender.tab.url
-      : "from the extension"
-  );
-  if (request?.activeSymbol) {
-    chrome.browserAction.setBadgeText({ text: request?.activeSymbol });
-  }
-});
+
 // const TextMenu = {
 //   id: "Queue Keywords",
 //   title: "Queue Keywords",

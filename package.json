@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "yarn clean && yarn copy-static && yarn watch:all",
     "build": "yarn clean && yarn build:all && yarn copy-static",
-    "build:all": "yarn build:background & yarn build:contentscript & yarn build:popup",
+    "build:all": "yarn build:background & yarn build:contentscript & yarn build:popup & yarn build:options",
     "build:contentscript": "parcel build src/contentscript.ts -o contentscript.js",
     "build:background": "parcel build src/background.ts -o background.js",
     "build:popup": "parcel build src/popup.tsx -o popup.js --public-url='/'",
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.101",
+    "@types/d3": "^5.7.2",
     "@types/react": "^16.9.25",
     "@types/react-dom": "^16.9.5",
     "npm-run-all": "^4.1.5",
@@ -37,11 +38,11 @@
     "web-ext-types": "^3.2.1"
   },
   "dependencies": {
+    "d3": "^5.15.1",
     "d3-scale-chromatic": "^1.5.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "styled-components": "^5.0.1",
-    "siphon-tools":"file:./custom_modules/SiphonTools-master"
+    "styled-components": "^5.0.1"
   },
   "version": "0.0.0",
   "private": true
