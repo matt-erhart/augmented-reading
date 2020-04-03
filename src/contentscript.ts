@@ -3,8 +3,16 @@ import { unique } from "./utils";
 import * as d3 from "d3";
 // MountReact();
 
-// html regex
 // click tooo dynamic
+const mjxChtml = Array.from(document.getElementsByClassName("mjx-chtml"));
+
+// just write the definition in a floating input/textarea on click
+
+
+//bigrams
+mjxChtml.reduce((state, el, ix) => {
+  console.log(el.textContent);
+}, {});
 
 // find words where 1 letter per span
 const wordsInTex = [
@@ -25,11 +33,10 @@ const wordsInTex = [
   "step_num",
   "warmup_steps",
   "dropout",
-  "drop"
+  "drop",
+  "model"
 ];
-// const testWords = ["pos"]
-
-Array.from(document.getElementsByClassName("mjx-chtml")).forEach(el => {
+mjxChtml.forEach(el => {
   for (let testWord of wordsInTex) {
     if (el.textContent?.includes(testWord)) {
       // const initReducerState = 0
@@ -55,8 +62,7 @@ Array.from(document.getElementsByClassName("mjx-chtml")).forEach(el => {
         if (charIndex === testWord.length - 1) {
           // if full word match
           elCache.forEach(el => {
-            console.log("el: ", el.textContent);
-            el.style.border = "1px solid red";
+            // el.style.border = "1px solid red";
             el.id = "word";
             el.setAttribute("data-word", testWord);
           });
@@ -69,7 +75,7 @@ Array.from(document.getElementsByClassName("mjx-chtml")).forEach(el => {
   }
 });
 
-const keepBlack = [..."0123456789,.()[];"];
+const keepBlack = [..."0123456789,.()[];√-+="];
 
 // all single math symbols
 const allMathElements = Array.from(
@@ -222,10 +228,15 @@ function surroundSelection() {
           )
           .forEach(el => {
             el.title = sel?.toString() + " " + el.title;
-            el.removeEventListener("click", setActive(el));
-            let link = document.createElement("a");
-            link.href = "#" + span.id;
-            surroundEl(el, link);
+
+            if (false) {
+              // this make the symbol a link to the definition
+              // but it currently interferes with other click bx
+              el.removeEventListener("click", setActive(el));
+              let link = document.createElement("a");
+              link.href = "#" + span.id;
+              surroundEl(el, link);
+            }
           });
       }
     }
