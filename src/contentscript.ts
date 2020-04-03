@@ -1,18 +1,17 @@
 import { MountReact } from "./index";
 import { unique } from "./utils";
 import * as d3 from "d3";
+
 // MountReact();
-
-// click tooo dynamic
-const mjxChtml = Array.from(document.getElementsByClassName("mjx-chtml"));
-
 // just write the definition in a floating input/textarea on click
+// save to sync storage
 
+const mjxChtml = Array.from(document.getElementsByClassName("mjx-chtml"));
+const paragraphs = Array.from(document.getElementsByClassName("ltx_p"));
+let range = document.createRange();
 
-//bigrams
-mjxChtml.reduce((state, el, ix) => {
-  console.log(el.textContent);
-}, {});
+range.setStart(startNode, startOffset);
+range.setEnd(endNode, endOffset);
 
 // find words where 1 letter per span
 const wordsInTex = [
@@ -34,9 +33,9 @@ const wordsInTex = [
   "warmup_steps",
   "dropout",
   "drop",
-  "model"
+  "model",
 ];
-mjxChtml.forEach(el => {
+mjxChtml.forEach((el) => {
   for (let testWord of wordsInTex) {
     if (el.textContent?.includes(testWord)) {
       // const initReducerState = 0
@@ -61,7 +60,7 @@ mjxChtml.forEach(el => {
 
         if (charIndex === testWord.length - 1) {
           // if full word match
-          elCache.forEach(el => {
+          elCache.forEach((el) => {
             // el.style.border = "1px solid red";
             el.id = "word";
             el.setAttribute("data-word", testWord);
@@ -80,11 +79,11 @@ const keepBlack = [..."0123456789,.()[];√-+="];
 // all single math symbols
 const allMathElements = Array.from(
   document.getElementsByClassName("mjx-char")
-).filter(x => x.textContent.length === 1 && x.id !== "word");
+).filter((x) => x.textContent.length === 1 && x.id !== "word");
 
 // papers symbol set
 const uniqueMathSymbols = unique(
-  allMathElements.map(x => x.textContent)
+  allMathElements.map((x) => x.textContent)
 ).reverse();
 
 // look up for text to color
@@ -133,7 +132,7 @@ let d3Container = d3.select("body").append(() => container);
 function updateD3(scrollData) {
   d3Container
     .selectAll("div")
-    .data(scrollData.filter(sd => sd.text === activeSymbol)) // side effect
+    .data(scrollData.filter((sd) => sd.text === activeSymbol)) // side effect
     .join("div")
     .style("position", "absolute")
     .style("height", "1px")
@@ -144,33 +143,33 @@ function updateD3(scrollData) {
 
 // get location of symbols rel. to body
 let prev = 0;
-allMathElements.forEach(el => {
+allMathElements.forEach((el) => {
   let top = el.getBoundingClientRect().top + window.pageYOffset;
   // if (prev === top) top = top * 1.01;
   prev = top;
   scrollData.push({
     text: el.textContent,
     top: top / document.body.scrollHeight,
-    color: symbolColors[el.textContent]
+    color: symbolColors[el.textContent],
   });
   el.title = el.title + "/" + counts[el.textContent];
 });
 
 function focusActive(el) {
   allMathElements
-    .filter(x => el.textContent !== x.textContent)
-    .forEach(el => {
+    .filter((x) => el.textContent !== x.textContent)
+    .forEach((el) => {
       el.style.color = "lightgrey";
     });
 }
 
 function renderAllColors() {
-  allMathElements.forEach(el => {
+  allMathElements.forEach((el) => {
     el.style.color = symbolColors[el.textContent];
   });
 }
 
-const setActive = el => e => {
+const setActive = (el) => (e) => {
   activeColor = symbolColors[el.textContent];
   activeSymbol = activeSymbol === "" ? el.textContent : "";
   navigator.clipboard.writeText(activeSymbol).then();
@@ -183,18 +182,18 @@ const setActive = el => e => {
   updateD3(scrollData);
 };
 
-const onHoverSymbol = el => e => {
+const onHoverSymbol = (el) => (e) => {
   if (!activeSymbol) focusActive(el);
 };
 
-const onExitSymbol = el => e => {
+const onExitSymbol = (el) => (e) => {
   if (!activeSymbol) renderAllColors();
 };
 
 // // augment elements
 allMathElements
-  .filter(x => x.textContent.length === 1)
-  .forEach(el => {
+  .filter((x) => x.textContent.length === 1)
+  .forEach((el) => {
     el.style.color = symbolColors[el.textContent];
     el.style.cursor = "pointer";
     el.style.fontWeight = "bold";
@@ -224,9 +223,9 @@ function surroundSelection() {
       if (sel?.toString().length > 0) {
         allMathElements
           .filter(
-            x => x.textContent.length === 1 && x.textContent === activeSymbol
+            (x) => x.textContent.length === 1 && x.textContent === activeSymbol
           )
-          .forEach(el => {
+          .forEach((el) => {
             el.title = sel?.toString() + " " + el.title;
 
             if (false) {
@@ -248,7 +247,7 @@ function surroundEl(el, wrapper) {
   wrapper.appendChild(el);
 }
 
-document.addEventListener("mouseup", e => {
+document.addEventListener("mouseup", (e) => {
   if (activeSymbol !== "") surroundSelection();
 });
 

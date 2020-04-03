@@ -38,8 +38,10 @@
     "web-ext-types": "^3.2.1"
   },
   "dependencies": {
+    "compromise": "^13.1.1",
     "d3": "^5.15.1",
     "d3-scale-chromatic": "^1.5.0",
+    "mark.js": "^8.11.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "styled-components": "^5.0.1"

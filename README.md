@@ -48,6 +48,7 @@
 - non-math not-latex identifiers, e.g. condition-1, hypothesis-5, system-requirement-4, ELMO, BERT
 - symbols with one meaning that are sometime latex styled, sometimes regular text
 - symbols that change meaning throughout the paper
+- [point and talk /localized narratives](https://ai.googleblog.com/2020/02/open-images-v6-now-featuring-localized.html)
 
 ## Development & Trying it out
 Install dependencies:
