@@ -4,28 +4,77 @@ import * as d3 from "d3";
 // MountReact();
 
 // html regex
-// scroll bar
-let container = document.createElement("div");
-container.style.position = "fixed";
-container.style.height = "100vh";
-container.style.width = "10px";
-// container.style.border = "1px solid black";
-container.style.right = "0px";
-container.style.top = "0px";
-let point = document.createElement("div");
-point.style.position = "absolute";
-point.style.height = "10px";
-point.style.width = "10px";
-point.style.borderRadius = "100%";
+// click tooo dynamic
 
+// find words where 1 letter per span
+const wordsInTex = [
+  "Attention",
+  "Concat",
+  "head",
+  "MultiHead",
+  "softmax",
+  "LayerNorm",
+  "Sublayer",
+  "FFN",
+  "PE",
+  "sin",
+  "cos",
+  "pos",
+  "log",
+  "lrate",
+  "step_num",
+  "warmup_steps",
+  "dropout",
+  "drop"
+];
+// const testWords = ["pos"]
 
+Array.from(document.getElementsByClassName("mjx-chtml")).forEach(el => {
+  for (let testWord of wordsInTex) {
+    if (el.textContent?.includes(testWord)) {
+      // const initReducerState = 0
+      const charEls = Array.from(el.getElementsByClassName("mjx-char"));
+      charEls.reduce((elCache, el, i) => {
+        const charIndex = elCache.length;
+
+        if (testWord[charIndex] === el.textContent) {
+          elCache.push(el);
+        }
+
+        if (charIndex > 1 && testWord[charIndex] !== el.textContent) {
+          // testWord[charIndex]
+          console.log(
+            "testWord[charIndex]: ",
+            testWord[charIndex],
+            el.textContent
+          );
+          // past 0 index, reset if anything doesn't match
+          return [];
+        }
+
+        if (charIndex === testWord.length - 1) {
+          // if full word match
+          elCache.forEach(el => {
+            console.log("el: ", el.textContent);
+            el.style.border = "1px solid red";
+            el.id = "word";
+            el.setAttribute("data-word", testWord);
+          });
+          return [];
+        }
+
+        return elCache;
+      }, []);
+    }
+  }
+});
 
 const keepBlack = [..."0123456789,.()[];"];
 
 // all single math symbols
 const allMathElements = Array.from(
   document.getElementsByClassName("mjx-char")
-).filter(x => x.textContent.length === 1);
+).filter(x => x.textContent.length === 1 && x.id !== "word");
 
 // papers symbol set
 const uniqueMathSymbols = unique(
@@ -53,26 +102,38 @@ let counts = allMathElements.reduce((state, el, ix) => {
   return state;
 }, {});
 
-
-
 // STATE
 let activeColor = "";
 let activeSymbol = "";
-let scrollData = []
+let scrollData = [];
 
-let d3Container = d3
-.select("body")
-.append(() => container)
+// for d3 scroll viz
+let container = document.createElement("div");
+container.style.position = "fixed";
+container.style.height = "100vh";
+container.style.width = "10px";
+// container.style.border = "1px solid black";
+container.style.right = "0px";
+container.style.top = "0px";
+let point = document.createElement("div");
+point.style.position = "absolute";
+point.style.height = "10px";
+point.style.width = "10px";
+point.style.borderRadius = "100%";
 
-function updateD3(scrollData){
-  d3Container.selectAll("div")
-  .data(scrollData.filter(sd => sd.text===activeSymbol)) // side effect
-  .join("div")
-  .style("position", "absolute")
-  .style("height", "1px")
-  .style("width", "100%")
-  .style("background-color", ({ top, color }) => color)
-  .style("top", ({ top, color }) => top * 100 + "vh");
+// D3 scroll viz
+let d3Container = d3.select("body").append(() => container);
+
+function updateD3(scrollData) {
+  d3Container
+    .selectAll("div")
+    .data(scrollData.filter(sd => sd.text === activeSymbol)) // side effect
+    .join("div")
+    .style("position", "absolute")
+    .style("height", "1px")
+    .style("width", "100%")
+    .style("background-color", ({ top, color }) => color)
+    .style("top", ({ top, color }) => top * 100 + "vh");
 }
 
 // get location of symbols rel. to body
@@ -89,14 +150,12 @@ allMathElements.forEach(el => {
   el.title = el.title + "/" + counts[el.textContent];
 });
 
-
 function focusActive(el) {
   allMathElements
     .filter(x => el.textContent !== x.textContent)
     .forEach(el => {
       el.style.color = "lightgrey";
     });
-    
 }
 
 function renderAllColors() {
@@ -109,14 +168,13 @@ const setActive = el => e => {
   activeColor = symbolColors[el.textContent];
   activeSymbol = activeSymbol === "" ? el.textContent : "";
   navigator.clipboard.writeText(activeSymbol).then();
-  
 
   if (activeColor === "") {
     renderAllColors();
   } else {
     focusActive(el);
   }
-  updateD3(scrollData)
+  updateD3(scrollData);
 };
 
 const onHoverSymbol = el => e => {
