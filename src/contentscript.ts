@@ -1,17 +1,24 @@
 import { MountReact } from "./index";
 import { unique } from "./utils";
 import * as d3 from "d3";
-
+import Mark from "mark.js";
+var instance = new Mark(document.body);
+instance.mark(
+"BLEU WMT Transformer attention encoder decoder query key value head layer token position model",
+  {
+    element: "b",
+    // accuracy: "exactly",
+    separateWordSearch: true,
+    caseSensitive: true,
+    ignorePunctuation: ['.']
+  }
+);
 // MountReact();
 // just write the definition in a floating input/textarea on click
 // save to sync storage
 
 const mjxChtml = Array.from(document.getElementsByClassName("mjx-chtml"));
 const paragraphs = Array.from(document.getElementsByClassName("ltx_p"));
-let range = document.createRange();
-
-range.setStart(startNode, startOffset);
-range.setEnd(endNode, endOffset);
 
 // find words where 1 letter per span
 const wordsInTex = [
@@ -250,6 +257,31 @@ function surroundEl(el, wrapper) {
 document.addEventListener("mouseup", (e) => {
   if (activeSymbol !== "") surroundSelection();
 });
+
+// paragraphs.forEach((p, ix) => {
+//   p.style.transition = "border-color 2s";
+//   p.style.border = "1px solid transparent";
+//   p.id = "para" + String(ix);
+// });
+// if (!!window.IntersectionObserver) {
+//   let observer = new IntersectionObserver(
+//     (entries, observer) => {
+//       entries.forEach((entry) => {
+//         if (entry.isIntersecting) {
+//           console.log("entry: ", entry);
+//           entry.target.style.borderColor = "blue";
+//         } else {
+//           console.log("exits: ", entry);
+//           entry.target.style.borderColor = "transparent";
+//         }
+//       });
+//     },
+//     { threshold: 0.01 }
+//   );
+//   document.querySelectorAll("p.ltx_p").forEach((p) => {
+//     observer.observe(p);
+//   });
+// }
 
 // const titles = Array.from(document.querySelectorAll("h3 a")).forEach(el => {
 //   if (!el.parentElement) return;

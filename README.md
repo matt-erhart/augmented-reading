@@ -15,7 +15,7 @@
 - refresh to get a new random set of colors
 - symbol order number / total per symbol in title
 
-# And then
+# Future
 - Try out different chunking and coloring defaults
   - color in order to reduce visual crowding
     - similar shaped symbols get very different colors
@@ -46,9 +46,25 @@
   - list references
   - color by syntax
 - non-math not-latex identifiers, e.g. condition-1, hypothesis-5, system-requirement-4, ELMO, BERT
-- symbols with one meaning that are sometime latex styled, sometimes regular text
+- symbols with one meaning that are sometime latex styled, sometimes regular text, some times in english form, sometimes in math form
+- when a symbol and a word/phrase mean the same thing, also color the word/phrase
 - symbols that change meaning throughout the paper
 - [point and talk /localized narratives](https://ai.googleblog.com/2020/02/open-images-v6-now-featuring-localized.html)
+  - segment text so we know what phrase / sentence they are over
+- select -> type -> autocomplete from what's in the selection
+
+# attention is all you need notes
+https://www.arxiv-vanity.com/papers/1706.03762/
+tool helped identify that
+  - h = hidden then head
+  - k = key then kernal then key again
+  - W^O. O undefined. O then used as bigO notation
+key phrases
+BLEU WMT Transformer attention encoder decoder query key value head layer token position model
+
+# reformer notes
+https://www.arxiv-vanity.com/papers/2001.04451/
+- more notation heavy attention follow up to attention
 
 ## Development & Trying it out
 Install dependencies:
